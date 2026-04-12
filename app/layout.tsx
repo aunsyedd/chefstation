@@ -3,6 +3,7 @@ import { Cormorant_Garamond, DM_Sans } from "next/font/google";
 import { Navbar } from "@/components/Navbar";
 import { Footer } from "@/components/Footer";
 import { RouteLoader } from "@/components/RouteLoader";
+import { Chatbot } from "@/components/chatbot";
 import "./globals.css";
 
 const display = Cormorant_Garamond({
@@ -44,7 +45,7 @@ export default function RootLayout({
           <main className="flex-1">{children}</main>
           <Footer />
         </RouteLoader>
-
+      <Chatbot />  
       </body>
     </html>
   );
