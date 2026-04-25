@@ -1,8 +1,11 @@
 import { GoogleGenerativeAI } from "@google/generative-ai";
 import { NextResponse } from "next/server";
 
-export const runtime = "nodejs";
+if (!process.env.GEMINI_API_KEY) {
+  throw new Error("Missing GEMINI_API_KEY in .env.local");
+}
 
+const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
 
 const SYSTEM_PROMPT = `You are a friendly and helpful chatbot for "Chef Station", a premium desi and continental restaurant located in Jeddah, Saudi Arabia.
 
@@ -123,7 +126,6 @@ STRICT LINE BREAK RULE (CRITICAL - MUST FOLLOW):
 - NEVER use commas to join items.
 
 CORRECT FORMAT (ONLY ACCEPTABLE FORMAT):
-write teh food list in new line every food should be in new line
 1. Chicken Tikka - 12.0 SAR
 2. Chicken Tikka Boti - 28.0 SAR
 3. Chicken Reshmi Kabab - 28.0 SAR
@@ -136,52 +138,43 @@ Chicken Tikka - 12 SAR Chicken Boti - 28 SAR
 - If items are not written line by line, the response is INVALID.
 - This rule is mandatory and cannot be ignored under any condition.
 `;
-
 export async function POST(req) {
   try {
-    const apiKey = process.env.GEMINI_API_KEY;
+    const { messages } = await req.json();
 
-    console.log("API KEY:", apiKey);
-
-    if (!apiKey) {
-      return NextResponse.json(
-        { error: "ENV NOT LOADED" },
-        { status: 500 }
-      );
-    }
-
-    const genAI = new GoogleGenerativeAI(apiKey);
-
-    const body = await req.json();
-    console.log("BODY:", body);
-
-    const { messages } = body;
-
-    if (!messages) {
-      return NextResponse.json(
-        { error: "MESSAGES MISSING" },
-        { status: 400 }
-      );
+    if (!messages || messages.length === 0) {
+      return NextResponse.json({ error: "No messages provided" }, { status: 400 });
     }
 
     const model = genAI.getGenerativeModel({
-      model: "gemini-1.5-flash",
+      model: "gemini-2.5-flash",
       systemInstruction: SYSTEM_PROMPT,
     });
 
-    const chat = model.startChat({ history: [] });
+    // All messages except the last one become history
+    const trimmed = messages.slice(0, -1);
 
-    const result = await chat.sendMessage(messages[messages.length - 1].content);
+    // Gemini requires history to START with a user message — skip any leading assistant messages
+    const firstUserIndex = trimmed.findIndex((m) => m.role === "user");
+    const safeHistory = firstUserIndex === -1 ? [] : trimmed.slice(firstUserIndex);
 
-    return NextResponse.json({
-      reply: result.response.text(),
-    });
+    const history = safeHistory.map((m) => ({
+      role: m.role === "user" ? "user" : "model",
+      parts: [{ text: m.content }],
+    }));
+
+    const chat = model.startChat({ history });
+
+    const lastMessage = messages[messages.length - 1].content;
+    const result = await chat.sendMessage(lastMessage);
+    const text = result.response.text();
+
+    return NextResponse.json({ reply: text });
 
   } catch (error) {
-    console.error("FULL ERROR:", error);
-
+    console.error("Gemini API error:", error?.message || error);
     return NextResponse.json(
-      { error: error.message, stack: error.stack },
+      { error: error?.message || "Something went wrong." },
       { status: 500 }
     );
   }
