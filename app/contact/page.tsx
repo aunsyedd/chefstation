@@ -1,23 +1,24 @@
 "use client";
 
 import { useState } from "react";
+import type { FormEvent } from "react";
 import { supabase } from "@/lib/supabaseClient";
 
 export default function ContactPage() {
   const [sent, setSent] = useState(false);
   const [loading, setLoading] = useState(false);
 
-  async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
+  async function handleSubmit(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
     setLoading(true);
 
     const form = new FormData(e.currentTarget);
 
     const data = {
-      name: form.get("name"),
-      email: form.get("email"),
-      subject: form.get("subject"),
-      message: form.get("message"),
+      name: String(form.get("name") || ""),
+      email: String(form.get("email") || ""),
+      subject: String(form.get("subject") || ""),
+      message: String(form.get("message") || ""),
     };
 
     const { error } = await supabase
@@ -35,7 +36,7 @@ export default function ContactPage() {
     }
   }
 
- return (
+  return (
     <div>
       <div className="border-b border-stone-200 bg-white">
         <div className="mx-auto max-w-6xl px-4 py-14 sm:px-6 lg:px-8">
@@ -57,9 +58,10 @@ export default function ContactPage() {
               <p className="mt-2 text-stone-800">
                 Aziziyah Prince Majid Road
                 <br />
-                Jeddah,  Saudi Arabia
+                Jeddah, Saudi Arabia
               </p>
             </div>
+
             <div>
               <h2 className="text-xs font-semibold uppercase tracking-wider text-stone-500">Hours</h2>
               <p className="mt-2 text-stone-600">
@@ -72,10 +74,11 @@ export default function ContactPage() {
                 <span className="text-stone-500">Closed Mondays</span>
               </p>
             </div>
+
             <div>
               <h2 className="text-xs font-semibold uppercase tracking-wider text-stone-500">Phone & email</h2>
               <p className="mt-2 text-stone-600">
-                <a href="tel:+15551234567" className="text-stone-900 underline-offset-4 hover:underline">
+                <a href="tel:+966531881668" className="text-stone-900 underline-offset-4 hover:underline">
                   +966 53 188 1668
                 </a>
                 <br />
@@ -84,26 +87,30 @@ export default function ContactPage() {
                 </a>
               </p>
             </div>
-<div className="overflow-hidden rounded-2xl border border-stone-200 bg-stone-100">
-  <iframe
-    title="ChefStation map"
-    className="h-56 w-full grayscale contrast-[0.95] sm:h-64"
-    loading="lazy"
-    referrerPolicy="no-referrer-when-downgrade"
-    src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3721.5652!2d39.2038691!3d21.5561173!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x15c3d10022c7d821%3A0x27367a3663c7ebd4!2sChef%20Station!5e0!3m2!1sen!2ssa!4v1710000000000!5m2!1sen!2ssa"
-  />
 
-  <p className="border-t border-stone-200 px-4 py-3 text-center text-xs text-stone-500">
-    Chef Station location — Jeddah, Saudi Arabia
-  </p>
-</div>
+            <div className="overflow-hidden rounded-2xl border border-stone-200 bg-stone-100">
+              <iframe
+                title="ChefStation map"
+                className="h-56 w-full grayscale contrast-[0.95] sm:h-64"
+                loading="lazy"
+                referrerPolicy="no-referrer-when-downgrade"
+                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3721.5652!2d39.2038691!3d21.5561173!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x15c3d10022c7d821%3A0x27367a3663c7ebd4!2sChef%20Station!5e0!3m2!1sen!2ssa!4v1710000000000!5m2!1sen!2ssa"
+              />
+
+              <p className="border-t border-stone-200 px-4 py-3 text-center text-xs text-stone-500">
+                Chef Station location — Jeddah, Saudi Arabia
+              </p>
+            </div>
           </div>
 
           <div className="lg:col-span-3">
             <div className="rounded-2xl border border-stone-200 bg-white p-6 shadow-sm sm:p-8">
               <h2 className="font-display text-2xl font-medium text-stone-900">Send a message</h2>
+
               {sent ? (
-                <p className="mt-6 text-stone-600">Thank you—we will get back to you within one business day. (Demo form.)</p>
+                <p className="mt-6 text-stone-600">
+                  Thank you—we will get back to you soon. 
+                </p>
               ) : (
                 <form onSubmit={handleSubmit} className="mt-6 space-y-5">
                   <div className="grid gap-5 sm:grid-cols-2">
@@ -116,6 +123,7 @@ export default function ContactPage() {
                         className="mt-1.5 w-full rounded-xl border border-stone-300 px-4 py-2.5 outline-none ring-amber-500/30 focus:border-amber-500 focus:ring-2"
                       />
                     </label>
+
                     <label className="block text-sm">
                       <span className="font-medium text-stone-700">Email</span>
                       <input
@@ -126,6 +134,7 @@ export default function ContactPage() {
                       />
                     </label>
                   </div>
+
                   <label className="block text-sm">
                     <span className="font-medium text-stone-700">Subject</span>
                     <input
@@ -136,6 +145,7 @@ export default function ContactPage() {
                       placeholder="Private dining, press, etc."
                     />
                   </label>
+
                   <label className="block text-sm">
                     <span className="font-medium text-stone-700">Message</span>
                     <textarea
@@ -145,11 +155,13 @@ export default function ContactPage() {
                       className="mt-1.5 w-full resize-none rounded-xl border border-stone-300 px-4 py-2.5 outline-none ring-amber-500/30 focus:border-amber-500 focus:ring-2"
                     />
                   </label>
+
                   <button
                     type="submit"
-                    className="rounded-full bg-amber-500 px-8 py-3 text-sm font-semibold text-stone-950 transition hover:bg-amber-400"
+                    disabled={loading}
+                    className="rounded-full bg-amber-500 px-8 py-3 text-sm font-semibold text-stone-950 transition hover:bg-amber-400 disabled:opacity-60"
                   >
-                    Send message
+                    {loading ? "Sending..." : "Send message"}
                   </button>
                 </form>
               )}
