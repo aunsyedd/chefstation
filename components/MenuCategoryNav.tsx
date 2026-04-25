@@ -98,8 +98,7 @@ export function MenuCategoryNav() {
     setActive(slug);
     scrollLockUntil.current = Date.now() + 500;
   };
-
-  return (
+ return (
     <nav
       aria-label="Menu sections"
       className="relative sticky top-16 z-30 border-b border-stone-800 bg-stone-950 shadow-[0_4px_24px_-2px_rgba(0,0,0,0.35)] backdrop-blur-md"
@@ -109,10 +108,11 @@ export function MenuCategoryNav() {
         aria-hidden
       />
 
-      <div className="pointer-events-none absolute inset-y-0 left-0 z-10 w-12 bg-gradient-to-r from-stone-950 via-stone-950/90 to-transparent sm:hidden" />
-      <div className="pointer-events-none absolute inset-y-0 right-0 z-10 w-12 bg-gradient-to-l from-stone-950 via-stone-950/90 to-transparent sm:hidden" />
-<div className="relative mx-auto max-w-6xl px-3 py-2 sm:px-4 sm:py-2 lg:px-6">
-        <div className="mb-2 hidden items-center justify-center gap-3 sm:flex">
+      <div className="pointer-events-none inset-y-0 left-0 z-10 w-12 bg-gradient-to-r from-stone-950 via-stone-950/90 to-transparent sm:hidden" />
+      <div className="pointer-events-none  inset-y-0 right-0 z-10 w-12 bg-gradient-to-l from-stone-950 via-stone-950/90 to-transparent sm:hidden" />
+
+      <div className="relative mx-auto max-w-6xl px-3 py-3.5 sm:px-5 sm:py-4 lg:px-8">
+        <div className="mb-3 hidden items-center justify-center gap-3 sm:flex">
           <span className="h-px w-12 bg-stone-700 sm:w-16" />
           <span className="font-display text-[11px] font-medium uppercase tracking-[0.28em] text-stone-500">
             Menu sections
