@@ -138,6 +138,7 @@ Chicken Tikka - 12 SAR Chicken Boti - 28 SAR
 - If items are not written line by line, the response is INVALID.
 - This rule is mandatory and cannot be ignored under any condition.
 `;
+
 export async function POST(req) {
   try {
     const { messages } = await req.json();
@@ -151,10 +152,8 @@ export async function POST(req) {
       systemInstruction: SYSTEM_PROMPT,
     });
 
-    // All messages except the last one become history
     const trimmed = messages.slice(0, -1);
 
-    // Gemini requires history to START with a user message — skip any leading assistant messages
     const firstUserIndex = trimmed.findIndex((m) => m.role === "user");
     const safeHistory = firstUserIndex === -1 ? [] : trimmed.slice(firstUserIndex);
 
