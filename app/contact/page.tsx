@@ -1,0 +1,180 @@
+"use client";
+
+import { useState } from "react";
+import { supabase } from "@/lib/supabaseClient";
+
+export default function ContactPage() {
+  const [sent, setSent] = useState(false);
+  const [loading, setLoading] = useState(false);
+
+  async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
+    e.preventDefault();
+    setLoading(true);
+
+    const form = new FormData(e.currentTarget);
+
+    const data = {
+      name: form.get("name"),
+      email: form.get("email"),
+      subject: form.get("subject"),
+      message: form.get("message"),
+    };
+
+    const { error } = await supabase
+      .from("contact_messages")
+      .insert([data]);
+
+    setLoading(false);
+
+    if (!error) {
+      setSent(true);
+      e.currentTarget.reset(); // clears form
+    } else {
+      console.log(error);
+      alert("Something went wrong. Try again.");
+    }
+  }
+
+  return (
+    <div>
+      <div className="border-b border-stone-200 bg-white">
+        <div className="mx-auto max-w-6xl px-4 py-14 sm:px-6 lg:px-8">
+          <p className="text-xs font-semibold uppercase tracking-[0.25em] text-amber-600">
+            Contact
+          </p>
+          <h1 className="font-display mt-3 text-4xl font-medium tracking-tight text-stone-900 sm:text-5xl">
+            Say hello
+          </h1>
+          <p className="mt-4 max-w-xl text-lg text-stone-600">
+            Reservations, events, or feedback—we read every message.
+          </p>
+        </div>
+      </div>
+
+      <div className="mx-auto max-w-6xl px-4 py-16 sm:px-6 lg:px-8">
+        <div className="grid gap-12 lg:grid-cols-5 lg:gap-16">
+          
+          {/* LEFT SIDE INFO */}
+          <div className="lg:col-span-2 space-y-8">
+            <div>
+              <h2 className="text-xs font-semibold uppercase tracking-wider text-stone-500">
+                Visit
+              </h2>
+              <p className="mt-2 text-stone-800">
+                Aziziyah Prince Majid Road
+                <br />
+                Jeddah, Saudi Arabia
+              </p>
+            </div>
+
+            <div>
+              <h2 className="text-xs font-semibold uppercase tracking-wider text-stone-500">
+                Hours
+              </h2>
+              <p className="mt-2 text-stone-600">
+                Tue–Thu: 5pm – 10pm
+                <br />
+                Fri–Sat: 5pm – 11pm
+                <br />
+                Sun: 5pm – 9pm
+                <br />
+                <span className="text-stone-500">Closed Mondays</span>
+              </p>
+            </div>
+
+            <div>
+              <h2 className="text-xs font-semibold uppercase tracking-wider text-stone-500">
+                Phone & email
+              </h2>
+              <p className="mt-2 text-stone-600">
+                <a
+                  href="tel:+966531881668"
+                  className="text-stone-900 underline-offset-4 hover:underline"
+                >
+                  +966 53 188 1668
+                </a>
+                <br />
+                <a
+                  href="mailto:hello@chefstation.com"
+                  className="text-stone-900 underline-offset-4 hover:underline"
+                >
+                  hello@chefstation.com
+                </a>
+              </p>
+            </div>
+          </div>
+
+          {/* RIGHT SIDE FORM */}
+          <div className="lg:col-span-3">
+            <div className="rounded-2xl border border-stone-200 bg-white p-6 shadow-sm sm:p-8">
+              <h2 className="font-display text-2xl font-medium text-stone-900">
+                Send a message
+              </h2>
+
+              {sent ? (
+                <p className="mt-6 text-stone-600">
+                  Thank you—we will get back to you within one business day.
+                </p>
+              ) : (
+                <form onSubmit={handleSubmit} className="mt-6 space-y-5">
+                  
+                  <div className="grid gap-5 sm:grid-cols-2">
+                    <label className="block text-sm">
+                      <span className="font-medium text-stone-700">Name</span>
+                      <input
+                        required
+                        type="text"
+                        name="name"
+                        className="mt-1.5 w-full rounded-xl border border-stone-300 px-4 py-2.5 outline-none focus:border-amber-500 focus:ring-2"
+                      />
+                    </label>
+
+                    <label className="block text-sm">
+                      <span className="font-medium text-stone-700">Email</span>
+                      <input
+                        required
+                        type="email"
+                        name="email"
+                        className="mt-1.5 w-full rounded-xl border border-stone-300 px-4 py-2.5 outline-none focus:border-amber-500 focus:ring-2"
+                      />
+                    </label>
+                  </div>
+
+                  <label className="block text-sm">
+                    <span className="font-medium text-stone-700">Subject</span>
+                    <input
+                      required
+                      type="text"
+                      name="subject"
+                      placeholder="Private dining, press, etc."
+                      className="mt-1.5 w-full rounded-xl border border-stone-300 px-4 py-2.5 outline-none focus:border-amber-500 focus:ring-2"
+                    />
+                  </label>
+
+                  <label className="block text-sm">
+                    <span className="font-medium text-stone-700">Message</span>
+                    <textarea
+                      required
+                      name="message"
+                      rows={5}
+                      className="mt-1.5 w-full resize-none rounded-xl border border-stone-300 px-4 py-2.5 outline-none focus:border-amber-500 focus:ring-2"
+                    />
+                  </label>
+
+                  <button
+                    type="submit"
+                    disabled={loading}
+                    className="rounded-full bg-amber-500 px-8 py-3 text-sm font-semibold text-stone-950 transition hover:bg-amber-400 disabled:opacity-50"
+                  >
+                    {loading ? "Sending..." : "Send message"}
+                  </button>
+                </form>
+              )}
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  );
+}
