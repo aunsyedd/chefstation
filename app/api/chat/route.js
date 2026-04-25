@@ -141,53 +141,47 @@ export async function POST(req) {
   try {
     const apiKey = process.env.GEMINI_API_KEY;
 
+    console.log("API KEY:", apiKey);
+
     if (!apiKey) {
       return NextResponse.json(
-        { error: "Missing GEMINI_API_KEY" },
+        { error: "ENV NOT LOADED" },
         { status: 500 }
       );
     }
 
     const genAI = new GoogleGenerativeAI(apiKey);
 
-    const { messages } = await req.json();
+    const body = await req.json();
+    console.log("BODY:", body);
 
-    if (!messages || messages.length === 0) {
+    const { messages } = body;
+
+    if (!messages) {
       return NextResponse.json(
-        { error: "No messages provided" },
+        { error: "MESSAGES MISSING" },
         { status: 400 }
       );
     }
 
     const model = genAI.getGenerativeModel({
-      model: "gemini-1.5-flash", // safer model
+      model: "gemini-1.5-flash",
       systemInstruction: SYSTEM_PROMPT,
     });
 
-    const trimmed = messages.slice(0, -1);
+    const chat = model.startChat({ history: [] });
 
-    const firstUserIndex = trimmed.findIndex((m) => m.role === "user");
-    const safeHistory =
-      firstUserIndex === -1 ? [] : trimmed.slice(firstUserIndex);
+    const result = await chat.sendMessage(messages[messages.length - 1].content);
 
-    const history = safeHistory.map((m) => ({
-      role: m.role === "user" ? "user" : "model",
-      parts: [{ text: m.content }],
-    }));
+    return NextResponse.json({
+      reply: result.response.text(),
+    });
 
-    const chat = model.startChat({ history });
-
-    const lastMessage = messages[messages.length - 1].content;
-
-    const result = await chat.sendMessage(lastMessage);
-    const text = result.response.text();
-
-    return NextResponse.json({ reply: text });
   } catch (error) {
     console.error("FULL ERROR:", error);
 
     return NextResponse.json(
-      { error: error?.message || "Something went wrong." },
+      { error: error.message, stack: error.stack },
       { status: 500 }
     );
   }
