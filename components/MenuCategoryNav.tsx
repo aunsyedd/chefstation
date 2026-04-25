@@ -101,7 +101,7 @@ export function MenuCategoryNav() {
  return (
     <nav
       aria-label="Menu sections"
-      className="relative sticky top-16 z-30 border-b border-stone-800 bg-stone-950 shadow-[0_4px_24px_-2px_rgba(0,0,0,0.35)] backdrop-blur-md"
+      className="relative sticky top-14 z-30 border-b border-stone-800 bg-stone-950 shadow-[0_4px_24px_-2px_rgba(0,0,0,0.35)] backdrop-blur-md"
     >
       <div
         className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-amber-500/35 to-transparent"
@@ -122,7 +122,7 @@ export function MenuCategoryNav() {
 
         <div
           ref={listRef}
-          className="flex snap-x snap-mandatory gap-1.5 overflow-x-auto overscroll-x-contain px-0.5 py-0.5 [scrollbar-width:none] sm:flex-wrap sm:justify-center sm:gap-2 sm:overflow-visible sm:snap-none sm:px-0 [&::-webkit-scrollbar]:hidden"
+          className="flex snap-x snap-mandatory gap-1.5 overflow-x-auto overscroll-x-contain px-0.5  [scrollbar-width:none] sm:flex-wrap sm:justify-center sm:gap-2 sm:overflow-visible sm:snap-none sm:px-0 [&::-webkit-scrollbar]:hidden"
         >
           {menuCategoryNav.map(({ slug, category }) => {
             const isActive = active === slug;
