@@ -17,7 +17,6 @@ export function Navbar() {
   const [open, setOpen] = useState(false);
   const isFirstPath = useRef(true);
 
-  // 🔒 Prevent background scroll when menu is open
   useLayoutEffect(() => {
     document.body.style.overflow = open ? "hidden" : "auto";
   }, [open]);
@@ -65,12 +64,17 @@ export function Navbar() {
         </ul>
 
         {/* DESKTOP RESERVE */}
-        <Link
-          href="/#reserve"
+        <button
+          onClick={() => {
+            const el = document.getElementById("reserve");
+            if (el) {
+              el.scrollIntoView({ behavior: "smooth", block: "start" });
+            }
+          }}
           className="hidden rounded-full bg-amber-500 px-5 py-2.5 text-sm font-semibold text-black transition hover:bg-amber-400 md:inline-block"
         >
           Reserve
-        </Link>
+        </button>
 
         {/* HAMBURGER */}
         <button
@@ -96,7 +100,7 @@ export function Navbar() {
               className="fixed inset-0 bg-black md:hidden"
             />
 
-            {/* DRAWER */}
+            {/* DRAWER (FIXED VISIBILITY + BACKGROUND) */}
             <motion.div
               initial={{ x: "100%" }}
               animate={{ x: 0 }}
@@ -104,11 +108,12 @@ export function Navbar() {
               transition={{ type: "spring", stiffness: 260, damping: 28 }}
               className="
                 fixed right-0 top-0 z-50 h-full
-                w-full max-w-sm
-                bg-stone-950/95 backdrop-blur-xl
-                border-l border-stone-800
-                md:hidden
+                w-full max-w-sm md:hidden
                 flex flex-col
+                border-l border-stone-800
+
+                bg-gradient-to-b from-stone-950 via-stone-900 to-stone-950
+                backdrop-blur-2xl
               "
             >
               {/* HEADER */}
@@ -151,15 +156,26 @@ export function Navbar() {
                 })}
               </nav>
 
-              {/* FIXED BOTTOM BUTTON */}
+              {/* RESERVE BUTTON */}
               <div className="mt-auto p-6">
-                <Link
-                  href="/#reserve"
-                  onClick={() => setOpen(false)}
+                <button
+                  onClick={() => {
+                    setOpen(false);
+
+                    setTimeout(() => {
+                      const el = document.getElementById("reserve");
+                      if (el) {
+                        el.scrollIntoView({
+                          behavior: "smooth",
+                          block: "start",
+                        });
+                      }
+                    }, 150);
+                  }}
                   className="block w-full rounded-full bg-amber-500 py-3 text-center font-semibold text-black transition active:scale-95 hover:bg-amber-400"
                 >
                   Reserve a table
-                </Link>
+                </button>
               </div>
             </motion.div>
           </>
