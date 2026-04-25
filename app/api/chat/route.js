@@ -94,7 +94,7 @@ RULES:
 - Never make up items not on the menu above.
 - If asked for the "best dish" or "most popular", highlight featured items: Chicken Tikka, Chicken Angara Handi, Mutton Karahi, Mutton Sulamani Karahi, Chicken Karahi, Mutton Qorma, Chicken White Karahi, Chicken Shinwari Karahi, Spaghetti Bolognese.
 - If someone asks for the address, tell them: Aziziyah Prince Majid Road, Jeddah, Saudi Arabia.
-- If someone asks for the phone number, tell them: +966 53 188 1668.
+- If someone asks for the phone number, tell them: +966-53-188-1668.
 - If someone asks about opening hours, list each day clearly on a separate line like steps.
 - If someone asks if the restaurant is open on Monday, tell them it is closed on Mondays.
 `;

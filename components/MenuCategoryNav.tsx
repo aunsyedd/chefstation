@@ -10,16 +10,19 @@ function slugFromScrollPosition(): string {
   const trigger = SCROLL_TRIGGER_PX;
   let current = menuCategoryNav[0]?.slug ?? "";
 
-  for (let i = menuCategoryNav.length - 1; i >= 0; i--) {
+  for (let i = 0; i < menuCategoryNav.length; i++) {
     const slug = menuCategoryNav[i].slug;
     const el = document.getElementById(slug);
     if (!el) continue;
-    const top = el.getBoundingClientRect().top;
-    if (top <= trigger) {
-      current = slug;
-      break;
+
+    const rect = el.getBoundingClientRect();
+
+    // Section is considered active only if it's actually crossing the viewport area
+    if (rect.top <= trigger && rect.bottom > trigger) {
+      return slug;
     }
   }
+
   return current;
 }
 
@@ -44,7 +47,7 @@ export function MenuCategoryNav() {
     const hash = window.location.hash.slice(1);
     if (hash && menuCategoryNav.some((n) => n.slug === hash)) {
       setActive(hash);
-      scrollLockUntil.current = Date.now() + 500;
+      scrollLockUntil.current = Date.now() + 1000;
       return true;
     }
     return false;
@@ -108,9 +111,8 @@ export function MenuCategoryNav() {
 
       <div className="pointer-events-none absolute inset-y-0 left-0 z-10 w-12 bg-gradient-to-r from-stone-950 via-stone-950/90 to-transparent sm:hidden" />
       <div className="pointer-events-none absolute inset-y-0 right-0 z-10 w-12 bg-gradient-to-l from-stone-950 via-stone-950/90 to-transparent sm:hidden" />
-
-      <div className="relative mx-auto max-w-6xl px-3 py-3.5 sm:px-5 sm:py-4 lg:px-8">
-        <div className="mb-3 hidden items-center justify-center gap-3 sm:flex">
+<div className="relative mx-auto max-w-6xl px-3 py-2 sm:px-4 sm:py-2 lg:px-6">
+        <div className="mb-2 hidden items-center justify-center gap-3 sm:flex">
           <span className="h-px w-12 bg-stone-700 sm:w-16" />
           <span className="font-display text-[11px] font-medium uppercase tracking-[0.28em] text-stone-500">
             Menu sections
