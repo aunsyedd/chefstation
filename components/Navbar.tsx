@@ -78,6 +78,7 @@ export function Navbar() {
       behavior: "smooth",
     });
   }}
+  className="hidden md:inline-flex items-center rounded-full bg-amber-500 px-5 py-2 text-sm font-semibold text-stone-950 hover:bg-amber-400 transition"
 >
   Reserve
 </button>
