@@ -1,12 +1,6 @@
 import { GoogleGenerativeAI } from "@google/generative-ai";
 import { NextResponse } from "next/server";
 
-if (!process.env.GEMINI_API_KEY) {
-  throw new Error("Missing GEMINI_API_KEY in .env.local");
-}
-
-const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
-
 const SYSTEM_PROMPT = `You are a friendly and helpful chatbot for "Chef Station", a premium desi and continental restaurant located in Jeddah, Saudi Arabia.
 
 RESTAURANT INFO:
@@ -139,8 +133,20 @@ Chicken Tikka - 12 SAR Chicken Boti - 28 SAR
 - If items are not written line by line, the response is INVALID.
 - This rule is mandatory and cannot be ignored under any condition.
 `;
+
 export async function POST(req) {
   try {
+    const apiKey = process.env.GEMINI_API_KEY;
+
+    if (!apiKey) {
+      return NextResponse.json(
+        { error: "Missing GEMINI_API_KEY" },
+        { status: 500 }
+      );
+    }
+
+    const genAI = new GoogleGenerativeAI(apiKey);
+
     const { messages } = await req.json();
 
     if (!messages || messages.length === 0) {
@@ -152,10 +158,7 @@ export async function POST(req) {
       systemInstruction: SYSTEM_PROMPT,
     });
 
-    // All messages except the last one become history
     const trimmed = messages.slice(0, -1);
-
-    // Gemini requires history to START with a user message — skip any leading assistant messages
     const firstUserIndex = trimmed.findIndex((m) => m.role === "user");
     const safeHistory = firstUserIndex === -1 ? [] : trimmed.slice(firstUserIndex);
 
