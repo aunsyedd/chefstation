@@ -1,9 +1,8 @@
 import { GoogleGenerativeAI } from "@google/generative-ai";
 import { NextResponse } from "next/server";
-
-if (!process.env.GEMINI_API_KEY) {
-  throw new Error("Missing GEMINI_API_KEY in .env.local");
-}
+// if (!process.env.GEMINI_API_KEY) {
+//   throw new Error("Missing GEMINI_API_KEY in .env.local");
+// }
 
 const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
 
@@ -141,6 +140,16 @@ Chicken Tikka - 12 SAR Chicken Boti - 28 SAR
 
 export async function POST(req) {
   try {
+    // ✅ Move env check HERE (runtime, not build time)
+    if (!process.env.GEMINI_API_KEY) {
+      return NextResponse.json(
+        { error: "Missing GEMINI_API_KEY" },
+        { status: 500 }
+      );
+    }
+
+    const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
+
     const { messages } = await req.json();
 
     if (!messages || messages.length === 0) {
