@@ -59,14 +59,28 @@ export function Navbar() {
             );
           })}
         </ul>
+<button
+  onClick={() => {
+    setOpen(false);
 
-        <Link
-          href="/#reserve"
-          className="hidden rounded-full bg-amber-500 px-5 py-2.5 text-sm font-semibold text-stone-950 transition hover:bg-amber-400 md:inline-block"
-        >
-          Reserve
-        </Link>
+    const el = document.getElementById("reserve");
+    if (!el) return;
 
+    const navbarHeight = 90;
+
+    const top =
+      el.getBoundingClientRect().top +
+      window.pageYOffset -
+      navbarHeight;
+
+    window.scrollTo({
+      top,
+      behavior: "smooth",
+    });
+  }}
+>
+  Reserve
+</button>
         <button
           type="button"
           className="inline-flex h-10 w-10 items-center justify-center rounded-lg border border-stone-700 text-stone-200 md:hidden"

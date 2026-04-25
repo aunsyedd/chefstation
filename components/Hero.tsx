@@ -33,20 +33,24 @@ export function Hero() {
           </Link>
 
           {/* FIXED BUTTON */}
-          <button
-            onClick={() => {
-              const el = document.getElementById("reserve");
-              if (el) {
-                el.scrollIntoView({
-                  behavior: "smooth",
-                  block: "start",
-                });
-              }
-            }}
-            className="inline-flex items-center justify-center rounded-full border border-stone-500/60 px-8 py-3.5 text-sm font-semibold text-stone-100 transition hover:border-amber-400/60 hover:text-amber-200"
-          >
-            Book a table
-          </button>
+<button
+  onClick={() => {
+    const el = document.getElementById("reserve");
+    if (el) {
+      const yOffset = -80; // navbar height adjustment
+      const y =
+        el.getBoundingClientRect().top + window.pageYOffset + yOffset;
+
+      window.scrollTo({
+        top: y,
+        behavior: "smooth",
+      });
+    }
+  }}
+  className="inline-flex items-center justify-center rounded-full border border-stone-500/60 px-8 py-3.5 text-sm font-semibold text-stone-100 transition hover:border-amber-400/60 hover:text-amber-200"
+>
+  Book a table
+</button>
         </div>
       </div>
     </section>

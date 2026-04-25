@@ -43,7 +43,7 @@ export function ReservationSection() {
   return (
     <section
       id="reserve"
-      className="scroll-mt-24 border-y border-stone-200 bg-stone-100 py-16 sm:py-20"
+      className="scroll-mt-84 border-y border-stone-200 bg-stone-100 py-16 sm:py-20"
     >
       <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
         <div className="grid gap-12 lg:grid-cols-2 lg:gap-16 lg:items-start">
