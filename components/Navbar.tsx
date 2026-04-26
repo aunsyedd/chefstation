@@ -16,29 +16,46 @@ export function Navbar() {
   const [open, setOpen] = useState(false);
   const isFirstPath = useRef(true);
 
-  useLayoutEffect(() => {
-    if (isFirstPath.current) {
-      isFirstPath.current = false;
-      return;
-    }
-
+useLayoutEffect(() => {
+  const scrollToHash = () => {
     const hash = window.location.hash;
+    if (!hash) return;
 
-    if (hash) {
-      const id = hash.replace("#", "");
+    const id = hash.replace("#", "");
+
+    const tryScroll = () => {
       const el = document.getElementById(id);
 
       if (el) {
-        el.scrollIntoView({
-          behavior: "smooth",
-          block: "start",
-        });
-        return;
-      }
-    }
+        const navbarOffset = window.innerWidth < 640 ? 110 : 80;
 
-    window.scrollTo({ top: 0 });
-  }, [pathname]);
+        const top =
+          el.getBoundingClientRect().top +
+          window.pageYOffset -
+          navbarOffset;
+
+        window.scrollTo({
+          top,
+          behavior: "smooth",
+        });
+      } else {
+        // 🔥 retry if not yet mounted (KEY FIX for production)
+        setTimeout(tryScroll, 100);
+      }
+    };
+
+    tryScroll();
+  };
+
+  scrollToHash();
+
+  // 🔥 listen to hash change
+  window.addEventListener("hashchange", scrollToHash);
+
+  return () => {
+    window.removeEventListener("hashchange", scrollToHash);
+  };
+}, [pathname]);
 
   return (
     <header className="sticky top-0 z-50 border-b border-stone-800/80 bg-stone-950/95 backdrop-blur-md">
@@ -73,8 +90,8 @@ export function Navbar() {
 
         {/* DESKTOP RESERVE BUTTON (FIXED) */}
         <Link
-          href="/#reserve"
-          onClick={() => setOpen(false)}
+    href="/#reserve"
+  onClick={() => setOpen(false)}
           className="hidden md:inline-flex items-center rounded-full bg-amber-500 px-5 py-2 text-sm font-semibold text-stone-950 hover:bg-amber-400 transition"
         >
           Reserve
