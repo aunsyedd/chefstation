@@ -92,7 +92,15 @@ export function Footer() {
   </p>
 
   <p className="text-xs text-stone-600 mt-2">
-    Engineered & Developed by Nexora Tech (Founded by Aun Muhammad)
+    Engineered & Developed by{" "}
+    <a
+      href="https://www.nexoratech.info/"
+      target="_blank"
+      rel="noopener noreferrer"
+      className="text-stone-400 hover:text-white transition"
+    >
+      Nexora Tech
+    </a>
   </p>
 </div>
       
