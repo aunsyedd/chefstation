@@ -91,6 +91,7 @@ export function Footer() {
     © {new Date().getFullYear()} Chef Station. All rights reserved.
   </p>
 
+  {/* Developer credit link */}
   <p className="text-xs text-stone-600 mt-2">
     Engineered & Developed by{" "}
     <a
