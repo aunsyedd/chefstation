@@ -8,7 +8,7 @@ serve(async (req) => {
     const apiKey = Deno.env.get("RESEND_API_KEY");
 
     // 🟢 RESERVATION EMAIL CONTENT ONLY
-    const emailContent = `
+const emailContent = `
 New Reservation - Chef Station
 
 Name: ${record.name || "N/A"}
@@ -16,6 +16,7 @@ Guests: ${record.guests || "N/A"}
 Date: ${record.reservation_date || "N/A"}
 Time: ${record.reservation_time || "N/A"}
 Email: ${record.email || "N/A"}
+Phone: ${record.phone || "N/A"}
 Notes: ${record.notes || "N/A"}
 `;
 

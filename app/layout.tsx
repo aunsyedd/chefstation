@@ -4,6 +4,7 @@ import { Navbar } from "@/components/Navbar";
 import { Footer } from "@/components/Footer";
 import { RouteLoader } from "@/components/RouteLoader";
 import { Chatbot } from "@/components/chatbot";
+import "react-phone-input-2/lib/style.css";
 import "./globals.css";
 
 const display = Cormorant_Garamond({

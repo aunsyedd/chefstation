@@ -7,12 +7,13 @@ serve(async (req) => {
 
     const apiKey = Deno.env.get("RESEND_API_KEY");
 
-    const emailContent = `
+const emailContent = `
 New Customer Message - Chef Station
 
 Name: ${record.name || "N/A"}
 Email: ${record.email || "N/A"}
-Subject: ${record.subject  || "N/A"}
+Phone: ${record.phone || "N/A"}
+Subject: ${record.subject || "N/A"}
 Message: ${record.message || "N/A"}
 `;
 

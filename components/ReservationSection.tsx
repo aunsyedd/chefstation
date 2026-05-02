@@ -1,11 +1,13 @@
 "use client";
 
 import { useState } from "react";
+import PhoneInput from "react-phone-input-2";
 import { supabase } from "@/lib/supabaseClient";
 
 export function ReservationSection() {
   const [submitted, setSubmitted] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [phone, setPhone] = useState("");
 
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
@@ -13,7 +15,6 @@ export function ReservationSection() {
 
     const form = new FormData(e.currentTarget);
 
-    // ✅ SAFE & CLEAN DATA MAPPING
     const data = {
       name: String(form.get("name") || ""),
       guests: Number(form.get("guests") || 1),
@@ -21,14 +22,19 @@ export function ReservationSection() {
       reservation_time: String(form.get("time") || ""),
       email: String(form.get("email") || ""),
       notes: String(form.get("notes") || ""),
+
+      // ✅ FIXED PHONE FIELD
+ phone: phone
+  ? phone.startsWith("+")
+    ? phone
+    : `+${phone}`
+  : "",
     };
 
-    // ❌ INSERT INTO SUPABASE
     const { error } = await supabase
       .from("reservations")
       .insert([data]);
 
-    // ❌ ERROR HANDLING (IMPORTANT)
     if (error) {
       console.log("🔥 Insert error:", error);
       alert(error.message);
@@ -42,13 +48,13 @@ export function ReservationSection() {
 
   return (
     <section
-id="reserve"
-className="scroll-mt-32 sm:scroll-mt-24 border-y border-stone-200 bg-stone-100 py-16 sm:py-20"
+      id="reserve"
+      className="scroll-mt-32 sm:scroll-mt-24 border-y border-stone-200 bg-stone-100 py-16 sm:py-20"
     >
       <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
         <div className="grid gap-12 lg:grid-cols-2 lg:gap-16 lg:items-start">
 
-          {/* LEFT CONTENT */}
+          {/* LEFT */}
           <div>
             <p className="text-xs font-semibold uppercase tracking-[0.25em] text-amber-600">
               Reservations
@@ -75,7 +81,6 @@ className="scroll-mt-32 sm:scroll-mt-24 border-y border-stone-200 bg-stone-100 p
 
                 {/* NAME + GUESTS */}
                 <div className="grid gap-5 sm:grid-cols-2">
-
                   <label className="block text-sm">
                     <span className="font-medium text-stone-700">Name</span>
                     <input
@@ -100,12 +105,10 @@ className="scroll-mt-32 sm:scroll-mt-24 border-y border-stone-200 bg-stone-100 p
                       ))}
                     </select>
                   </label>
-
                 </div>
 
                 {/* DATE + TIME */}
                 <div className="grid gap-5 sm:grid-cols-2">
-
                   <label className="block text-sm">
                     <span className="font-medium text-stone-700">Date</span>
                     <input
@@ -139,7 +142,6 @@ className="scroll-mt-32 sm:scroll-mt-24 border-y border-stone-200 bg-stone-100 p
                       ))}
                     </select>
                   </label>
-
                 </div>
 
                 {/* EMAIL */}
@@ -152,6 +154,31 @@ className="scroll-mt-32 sm:scroll-mt-24 border-y border-stone-200 bg-stone-100 p
                     placeholder="you@example.com"
                     className="mt-1.5 w-full rounded-xl border border-stone-300 px-4 py-2.5"
                   />
+                </label>
+
+                {/* PHONE */}
+                <label className="block text-sm">
+                  <span className="font-medium text-stone-700">
+                    Phone Number (WhatsApp preferred for quick confirmation)
+                  </span>
+
+                  <div className="mt-1.5">
+                    <PhoneInput
+                      country={"pk"}
+                      enableSearch={true}
+                      value={phone}
+                      onChange={(value) => setPhone(value)}
+                      inputStyle={{
+                        width: "100%",
+                        height: "42px",
+                        borderRadius: "12px",
+                        border: "1px solid #d6d3d1",
+                        paddingLeft: "48px",
+                        fontSize: "14px",
+                      }}
+                      containerStyle={{ width: "100%" }}
+                    />
+                  </div>
                 </label>
 
                 {/* NOTES */}
@@ -176,7 +203,6 @@ className="scroll-mt-32 sm:scroll-mt-24 border-y border-stone-200 bg-stone-100 p
 
               </form>
             )}
-
           </div>
         </div>
       </div>

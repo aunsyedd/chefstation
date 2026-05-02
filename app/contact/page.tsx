@@ -3,10 +3,12 @@
 import { useState } from "react";
 import type { FormEvent } from "react";
 import { supabase } from "@/lib/supabaseClient";
+import PhoneInput from "react-phone-input-2";
 
 export default function ContactPage() {
   const [sent, setSent] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [phone, setPhone] = useState("");
 
   async function handleSubmit(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
@@ -19,6 +21,11 @@ export default function ContactPage() {
       email: String(form.get("email") || ""),
       subject: String(form.get("subject") || ""),
       message: String(form.get("message") || ""),
+    phone: phone
+  ? phone.startsWith("+")
+    ? phone
+    : `+${phone}`
+  : "",
     };
 
     const { error } = await supabase
@@ -134,6 +141,31 @@ export default function ContactPage() {
                       />
                     </label>
                   </div>
+
+                  {/* PHONE */}
+<label className="block text-sm">
+<span className="font-medium text-stone-700">
+  Phone Number (WhatsApp preferred for quick confirmation)
+</span>
+
+  <div className="mt-1.5">
+<PhoneInput
+  country={"pk"}
+  enableSearch={true}
+  value={phone}
+  onChange={(value) => setPhone(value)}
+  inputStyle={{
+    width: "100%",
+    height: "42px",
+    borderRadius: "12px",
+    border: "1px solid #d6d3d1",
+    paddingLeft: "48px",
+    fontSize: "14px",
+  }}
+  containerStyle={{ width: "100%" }}
+/>
+  </div>
+</label>
 
                   <label className="block text-sm">
                     <span className="font-medium text-stone-700">Subject</span>
