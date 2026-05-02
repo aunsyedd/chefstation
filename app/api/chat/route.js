@@ -109,35 +109,8 @@ RULES:
 - Address: Aziziyah Prince Majid Road, Jeddah, Saudi Arabia.
 - Phone: +966-53-188-1668.
 - Monday: Closed.
-
-FINAL STRICT RULE:
-- ALWAYS use decimal prices (e.g., 34.3 SAR).
-- ALWAYS list items line by line.
-- NEVER break formatting under any condition.
-STRICT LINE BREAK RULE (CRITICAL - MUST FOLLOW):
-
-- Whenever listing food items, EACH item MUST be written on a NEW LINE.
-- EVERY food item MUST be separated clearly line by line.
-- EACH line MUST contain:
-  Item Name - Price (with decimals in SAR)
-
-- NEVER write multiple food items in the same line.
-- NEVER combine items in a sentence or paragraph.
-- NEVER use commas to join items.
-
-CORRECT FORMAT (ONLY ACCEPTABLE FORMAT):
-1. Chicken Tikka - 12.0 SAR
-2. Chicken Tikka Boti - 28.0 SAR
-3. Chicken Reshmi Kabab - 28.0 SAR
-
-WRONG FORMAT (STRICTLY FORBIDDEN):
-Chicken Tikka - 12.0 SAR, Chicken Boti - 28.0 SAR
-Chicken Tikka and Chicken Boti cost 12 and 28 SAR
-Chicken Tikka - 12 SAR Chicken Boti - 28 SAR
-
-- If items are not written line by line, the response is INVALID.
-- This rule is mandatory and cannot be ignored under any condition.
 `;
+
 export async function POST(req) {
   try {
     const { messages } = await req.json();
@@ -147,14 +120,13 @@ export async function POST(req) {
     }
 
     const model = genAI.getGenerativeModel({
-      model: "gemini-2.5-flash-lite",
+      model: "gemini-2.5-flash",
       systemInstruction: SYSTEM_PROMPT,
     });
 
-    // All messages except the last one become history
-    const trimmed = messages.slice(0, -1);
+    // ✅ LIMIT HISTORY (speed boost)
+    const trimmed = messages.slice(-4);
 
-    // Gemini requires history to START with a user message — skip any leading assistant messages
     const firstUserIndex = trimmed.findIndex((m) => m.role === "user");
     const safeHistory = firstUserIndex === -1 ? [] : trimmed.slice(firstUserIndex);
 
@@ -166,10 +138,17 @@ export async function POST(req) {
     const chat = model.startChat({ history });
 
     const lastMessage = messages[messages.length - 1].content;
-    const result = await chat.sendMessage(lastMessage);
-    const text = result.response.text();
 
-    return NextResponse.json({ reply: text });
+    // ✅ STREAMING RESPONSE (major speed improvement)
+    const result = await chat.sendMessageStream(lastMessage);
+
+    let finalText = "";
+
+    for await (const chunk of result.stream) {
+      finalText += chunk.text();
+    }
+
+    return NextResponse.json({ reply: finalText });
 
   } catch (error) {
     console.error("Gemini API error:", error?.message || error);
