@@ -102,6 +102,8 @@ export function Footer() {
     >
       Nexora Tech
     </a>
+
+    hhhhhh
   </p> */}
 </div>
       
