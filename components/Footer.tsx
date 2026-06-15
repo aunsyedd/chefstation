@@ -92,7 +92,7 @@ export function Footer() {
   </p>
 
   {/* Developer credit link */}
-  <p className="text-xs text-stone-600 mt-2">
+  {/* <p className="text-xs text-stone-600 mt-2">
     Engineered & Developed by{" "}
     <a
       href="https://www.nexoratech.info/"
@@ -102,7 +102,7 @@ export function Footer() {
     >
       Nexora Tech
     </a>
-  </p>
+  </p> */}
 </div>
       
       </div>
