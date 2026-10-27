@@ -80,9 +80,9 @@ export function Navbar() {
         </ul>
 
         <div className="hidden items-center gap-3 md:flex">
-          <a href={contact.phoneHref} className="text-sm font-bold text-ink hover:text-brand">
+          {/* <a href={contact.phoneHref} className="text-sm font-bold text-ink hover:text-brand">
             {contact.phoneDisplay}
-          </a>
+          </a> */}
           <Link
             href="/#reserve"
             className="pop rounded-full bg-brand px-5 py-2.5 font-display text-sm font-extrabold text-white"
