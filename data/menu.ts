@@ -59,11 +59,11 @@ export const menuItems: MenuItem[] = [
   },
   {
     id: "bbq-2",
-    name: "Chicken Tikka Boti ",
+    name: "Chicken Tikka Boti",
     description: "At Chef Station, our Chicken Tikka Boti is made with succulent boneless chicken cubes, marinated in a flavorful blend of yogurt and traditional spices, then grilled over open flames for a perfectly smoky and juicy bite.",
     price: 28,
     category: "BBQ",
-    image: "https://images.unsplash.com/photo-1599487488170-d11ec9c172f0?w=800&q=80",
+    image: "https://images.unsplash.com/photo-1781332146555-5507a0fc9bc9?w=1200&q=80",
   },
   {
     id: "bbq-3",
@@ -110,11 +110,11 @@ description: "At Chef Station, our Chicken Angara Handi is a rich and spicy deli
   },
   {
     id: "handi-2",
-    name: "Chicken Spalish Handi",
+    name: "Chicken Special Handi",
 description: "At Chef Station, our Chicken Special Handi is a signature dish made with tender chicken pieces slow-cooked in a rich, creamy gravy infused with traditional spices, tomatoes, and aromatic herbs, delivering a perfectly balanced, flavorful, and comforting taste in every bite.",
     price: 25,
     category: "Handi",
-    image: "https://images.unsplash.com/photo-1565557623262-b51c2513a641?w=800&q=80",
+    image: "https://images.unsplash.com/photo-1764304733301-3a9f335f0c67?w=1200&q=80",
   },
 {
   id: "handi-3",
@@ -122,7 +122,7 @@ description: "At Chef Station, our Chicken Special Handi is a signature dish mad
   description: "At Chef Station our Chicken Jalfrezi is a bold and spicy stir-fried dish made with tender chicken fresh onions capsicum and tomatoes tossed in traditional spices for a tangy slightly dry and flavorful taste with a perfect desi kick.",
   price: 25,
   category: "Handi",
-  image: "https://images.unsplash.com/photo-1603894584373-5ac82b2ae398?w=800&q=80",
+  image: "https://images.unsplash.com/photo-1652545296892-3787063f8b4d?w=1200&q=80",
 },
 {
   id: "handi-4",
@@ -226,7 +226,7 @@ description: "At Chef Station our Malai Boti Roll is a soft and creamy delight m
 description: "At Chef Station our Crispy Chicken Roll is a crunchy and flavorful wrap made with golden fried crispy chicken strips combined with fresh salad and signature sauces wrapped in soft bread delivering a perfect balance of crunch spice and juicy taste in every bite.",
     price: 12,
     category: "Rolls",
-    image: "/crispy roll.jpg",
+    image: "https://images.unsplash.com/photo-1626700051175-6818013e1d4f?w=1200&q=80",
   },
   // Sandwiches
   {
@@ -239,11 +239,11 @@ description: "At Chef Station our CS Special Club Sandwich is a hearty and satis
   },
   {
     id: "sand-2",
-    name: "Grilled Chicken Cheese Sandwhich",
+    name: "Grilled Chicken Cheese Sandwich",
 description: "At Chef Station our Grilled Chicken Cheese Sandwich is a warm and cheesy delight made with tender grilled chicken melted cheese fresh vegetables and signature sauces toasted between soft bread slices delivering a rich creamy and smoky flavorful taste in every bite.",
     price: 12,
     category: "Sandwiches",
-    image: "https://images.unsplash.com/photo-1528735602780-2552fd46c7af?w=800&q=80",
+    image: "https://images.unsplash.com/photo-1766232333734-eb20a123723b?w=1200&q=80",
   },
   {
     id: "sand-3",
@@ -277,7 +277,7 @@ description: "At Chef Station our Fettuccine Alfredo is a creamy Italian inspire
 description: "At Chef Station our Chicken Alfredo is a creamy and indulgent pasta dish made with tender grilled chicken tossed in a rich buttery parmesan cheese sauce with fettuccine noodles and aromatic herbs delivering a smooth comforting and flavorful taste in every bite.",
     price: 15,
     category: "Pasta",
-    image: "/Alfredo Chicken.jpg",
+    image: "https://images.unsplash.com/photo-1608219992759-8d74ed8d76eb?w=1200&q=80",
   },
   // Fish Delight
 //   {
