@@ -4,30 +4,29 @@ import { useEffect, useState } from "react";
 import { usePathname } from "next/navigation";
 import { motion } from "framer-motion";
 
-// Splash runs on full page loads only and is CSS-driven, so it never waits on hydration.
+// Splash plays on the first load and again on every route change. It is CSS-driven,
+// so it never waits on hydration; keying it by pathname restarts the animation.
 // The timeout below removes it even if the animation can't run.
-// Client-side route changes get a quick fade instead.
 export function RouteLoader({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
-  const [splash, setSplash] = useState(true);
+  const [doneFor, setDoneFor] = useState<string | null>(null);
+  const splash = doneFor !== pathname;
 
   useEffect(() => {
-    const t = setTimeout(() => setSplash(false), 1600);
+    const t = setTimeout(() => setDoneFor(pathname), 1600);
     return () => clearTimeout(t);
-  }, []);
+  }, [pathname]);
 
   return (
     <>
       {splash && (
         <div
+          key={`splash-${pathname}`}
           aria-hidden
           className="kraft-texture pointer-events-none fixed inset-0 z-[9999] flex animate-splash-out flex-col items-center justify-center"
         >
           <img src="/logo bg.png" alt="" className="h-48 w-48 animate-splash-pop object-contain" />
-          <div className="mt-6 w-56 overflow-hidden">
-            <div className="animate-splash-train text-3xl">🚂💨</div>
-            <div className="rail mt-1" />
-          </div>
+          <TrainTrack />
         </div>
       )}
 
@@ -41,5 +40,14 @@ export function RouteLoader({ children }: { children: React.ReactNode }) {
         {children}
       </motion.div>
     </>
+  );
+}
+
+export function TrainTrack() {
+  return (
+    <div className="mt-6 w-56 overflow-hidden">
+      <div className="animate-splash-train text-3xl">🚂💨</div>
+      <div className="rail mt-1" />
+    </div>
   );
 }
