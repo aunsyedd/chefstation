@@ -45,6 +45,7 @@ export function Chatbot() {
       });
 
       const data = await res.json();
+      if (!res.ok || !data.reply) throw new Error(data.error);
 
       setMessages([
         ...newMessages,

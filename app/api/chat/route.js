@@ -1,11 +1,8 @@
-import { GoogleGenerativeAI } from "@google/generative-ai";
 import { NextResponse } from "next/server";
 
-if (!process.env.GEMINI_API_KEY) {
-  throw new Error("Missing GEMINI_API_KEY in .env.local");
-}
-
-const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
+// Groq exposes an OpenAI-compatible chat completions API
+const GROQ_URL = "https://api.groq.com/openai/v1/chat/completions";
+const GROQ_MODEL = process.env.GROQ_MODEL || "openai/gpt-oss-120b";
 
 const SYSTEM_PROMPT = `You are a friendly and helpful chatbot for "Chef Station", a premium desi and continental restaurant located in Jeddah, Saudi Arabia.
 
@@ -119,39 +116,49 @@ export async function POST(req) {
       return NextResponse.json({ error: "No messages provided" }, { status: 400 });
     }
 
-    const model = genAI.getGenerativeModel({
-      model: "gemini-2.5-flash",
-      systemInstruction: SYSTEM_PROMPT,
-    });
+    if (!process.env.GROQ_API_KEY) {
+      throw new Error("Missing GROQ_API_KEY in .env.local");
+    }
 
     // ✅ LIMIT HISTORY (speed boost)
-    const trimmed = messages.slice(-4);
+    const trimmed = messages.slice(-6);
 
     const firstUserIndex = trimmed.findIndex((m) => m.role === "user");
     const safeHistory = firstUserIndex === -1 ? [] : trimmed.slice(firstUserIndex);
 
     const history = safeHistory.map((m) => ({
-      role: m.role === "user" ? "user" : "model",
-      parts: [{ text: m.content }],
+      role: m.role === "user" ? "user" : "assistant",
+      content: m.content,
     }));
 
-    const chat = model.startChat({ history });
+    const res = await fetch(GROQ_URL, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${process.env.GROQ_API_KEY}`,
+      },
+      body: JSON.stringify({
+        model: GROQ_MODEL,
+        messages: [{ role: "system", content: SYSTEM_PROMPT }, ...history],
+        temperature: 0.6,
+        // gpt-oss is a reasoning model: keep reasoning short so replies stay fast
+        reasoning_effort: "low",
+        max_tokens: 1024,
+      }),
+    });
 
-    const lastMessage = messages[messages.length - 1].content;
+    const data = await res.json();
 
-    // ✅ STREAMING RESPONSE (major speed improvement)
-    const result = await chat.sendMessageStream(lastMessage);
-
-    let finalText = "";
-
-    for await (const chunk of result.stream) {
-      finalText += chunk.text();
+    if (!res.ok) {
+      throw new Error(data?.error?.message || `Groq request failed (${res.status})`);
     }
 
-    return NextResponse.json({ reply: finalText });
+    const reply = data.choices?.[0]?.message?.content?.trim() || "";
+
+    return NextResponse.json({ reply });
 
   } catch (error) {
-    console.error("Gemini API error:", error?.message || error);
+    console.error("Groq API error:", error?.message || error);
     return NextResponse.json(
       { error: error?.message || "Something went wrong." },
       { status: 500 }
