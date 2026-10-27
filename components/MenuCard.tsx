@@ -7,8 +7,8 @@ type MenuCardProps = {
 
 export function MenuCard({ item }: MenuCardProps) {
   return (
-    <article className="group flex flex-col overflow-hidden rounded-2xl border border-stone-200/80 bg-white shadow-sm transition hover:border-amber-200/80 hover:shadow-lg">
-      <div className="relative aspect-[4/3] overflow-hidden bg-stone-200">
+    <article className="pop group flex h-full flex-col overflow-hidden rounded-3xl bg-white">
+      <div className="relative aspect-[4/3] overflow-hidden border-b-2 border-ink bg-kraft-light">
         <Image
           src={item.image}
           alt={item.name}
@@ -16,22 +16,21 @@ export function MenuCard({ item }: MenuCardProps) {
           sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
           className="object-cover transition duration-500 group-hover:scale-105"
         />
-        <span className="absolute left-3 top-3 rounded-full bg-stone-950/85 px-3 py-1 text-xs font-medium uppercase tracking-wide text-amber-300 backdrop-blur-sm">
-          {item.category}
+        {item.featured && (
+          <span className="tag absolute left-3 top-3 -rotate-3 border-2 border-ink bg-brand text-white">
+            🔥 Popular
+          </span>
+        )}
+        <span className="absolute bottom-3 right-3 rounded-2xl border-2 border-ink bg-kraft px-3 py-1.5 font-display text-lg font-extrabold leading-none shadow-[3px_3px_0_var(--color-ink)]">
+          {item.price}
+          <span className="ml-1 text-[11px] font-bold">SAR</span>
         </span>
       </div>
-      <div className="flex flex-1 flex-col p-5 sm:p-6">
-        <div className="flex items-start justify-between gap-3">
-          <h3 className="font-display text-xl font-medium text-stone-900">
-            {item.name}
-          </h3>
-          <span className="shrink-0 text-lg font-semibold text-amber-600">
-            ⃁ {item.price}
-          </span>
-        </div>
-        <p className="mt-2 flex-1 text-sm leading-relaxed text-stone-600">
-          {item.description}
-        </p>
+
+      <div className="flex flex-1 flex-col p-5">
+        <p className="text-[11px] font-bold uppercase tracking-[0.15em] text-brand">{item.category}</p>
+        <h3 className="mt-1 font-display text-xl font-extrabold leading-tight">{item.name.trim()}</h3>
+        <p className="mt-2 line-clamp-3 flex-1 text-sm leading-relaxed text-ink/65">{item.description}</p>
       </div>
     </article>
   );

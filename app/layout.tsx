@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Cormorant_Garamond, DM_Sans } from "next/font/google";
+import { Bricolage_Grotesque, DM_Sans, Caveat } from "next/font/google";
 import { Navbar } from "@/components/Navbar";
 import { Footer } from "@/components/Footer";
 import { RouteLoader } from "@/components/RouteLoader";
@@ -7,25 +7,29 @@ import { Chatbot } from "@/components/chatbot";
 import "react-phone-input-2/lib/style.css";
 import "./globals.css";
 
-const display = Cormorant_Garamond({
-  variable: "--font-display",
+const display = Bricolage_Grotesque({
+  variable: "--font-heading",
   subsets: ["latin"],
-  weight: ["400", "500", "600", "700"],
+  axes: ["opsz", "wdth"],
 });
 
 const sans = DM_Sans({
   variable: "--font-body",
   subsets: ["latin"],
-  weight: ["400", "500", "600", "700"],
+});
+
+const script = Caveat({
+  variable: "--font-script",
+  subsets: ["latin"],
 });
 
 export const metadata: Metadata = {
   title: {
-    default: "ChefStation | Contemporary Restaurant",
-    template: "%s | ChefStation",
+    default: "Chef Station | Desi Food in Aziziyah, Jeddah",
+    template: "%s | Chef Station",
   },
   description:
-    "ChefStation — seasonal plates, wood-fired favorites, and crafted cocktails in a warm, refined dining room.",
+    "Chef Station — desi food, fast bites and full meals at great prices. BBQ, karahi, handi, rolls and more on Prince Majid Road, Aziziyah, Jeddah.",
 };
 
 export default function RootLayout({
@@ -36,17 +40,16 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`${display.variable} ${sans.variable} h-full scroll-smooth`}
+      data-scroll-behavior="smooth"
+      className={`${display.variable} ${sans.variable} ${script.variable} h-full scroll-smooth`}
     >
-      <body className="flex min-h-full flex-col bg-stone-50 font-sans text-stone-900 antialiased">
-
-        {/* ✅ WRAP EVERYTHING HERE */}
+      <body className="flex min-h-full flex-col bg-paper font-sans text-ink antialiased">
+        <Navbar />
         <RouteLoader>
-          <Navbar />
           <main className="flex-1">{children}</main>
-          <Footer />
         </RouteLoader>
-      <Chatbot />  
+        <Footer />
+        <Chatbot />
       </body>
     </html>
   );

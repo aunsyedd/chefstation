@@ -1,4 +1,6 @@
 import Link from "next/link";
+import { Logo } from "@/components/Logo";
+import { contact, openingHours } from "@/data/site";
 
 const social = [
   {
@@ -30,83 +32,118 @@ const social = [
   // },
 ];
 
+const explore = [
+  { href: "/menu", label: "Menu" },
+  { href: "/about", label: "About" },
+  { href: "/contact", label: "Contact" },
+  { href: "/#reserve", label: "Book a table" },
+];
+
 export function Footer() {
   return (
-    <footer className="border-t border-stone-800 bg-stone-950 text-stone-400">
-      <div className="mx-auto max-w-6xl px-4 py-14 sm:px-6 lg:px-8">
-        <div className="flex flex-col gap-10 md:flex-row md:items-start md:justify-between">
+    <footer className="border-t-2 border-ink">
+      {/* CTA band */}
+      <div className="kraft-texture border-b-2 border-ink text-ink">
+        <div className="container-x flex flex-col items-start justify-between gap-6 py-12 md:flex-row md:items-center">
           <div>
-          <img 
-        src="/logo bg.png" 
-        className="h-19 w-auto object-contain"
-      />
-            <p className="mt-3 max-w-sm text-sm leading-relaxed">
-            8355 Prince Majid Rd, Aziziyah, Jeddah 23342, Saudi Arabia
-            </p>
+            <p className="font-hand text-3xl font-bold text-brand">Bhook lagi hai?</p>
+            <h2 className="font-display text-4xl font-extrabold leading-none tracking-tight sm:text-5xl">
+              Next stop: Chef Station.
+            </h2>
           </div>
-          <div className="flex flex-col gap-6 sm:flex-row sm:gap-16">
-            <div>
-              <p className="text-xs font-semibold uppercase tracking-wider text-stone-500">Explore</p>
-              <ul className="mt-3 space-y-2 text-sm">
-                <li>
-                  <Link href="/menu" className="hover:text-amber-300">
-                    Menu
-                  </Link>
-                </li>
-                <li>
-                  <Link href="/about" className="hover:text-amber-300">
-                    About
-                  </Link>
-                </li>
-                <li>
-                  <Link href="/contact" className="hover:text-amber-300">
-                    Contact
-                  </Link>
-                </li>
-              </ul>
-            </div>
-            <div>
-            <p className="ml-[17px] text-xs font-semibold uppercase tracking-wider text-stone-500">
-  Follow
-</p>
-              <div className="mt-3 flex gap-4">
-                {social.map((s) => (
-                  <a
-                    key={s.name}
-                    href={s.href}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="rounded-full border border-stone-700 p-2 text-stone-300 transition hover:border-amber-500/50 hover:text-amber-400"
-                    aria-label={s.name}
-                  >
-                    {s.icon}
-                  </a>
-                ))}
-              </div>
-            </div>
+          <div className="flex flex-wrap gap-3">
+            <Link href="/#reserve" className="pop rounded-full bg-brand px-6 py-3.5 font-display font-extrabold text-white">
+              Book a table
+            </Link>
+            <a
+              href={contact.whatsapp}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="pop rounded-full bg-ink px-6 py-3.5 font-display font-extrabold text-white"
+            >
+              WhatsApp us
+            </a>
           </div>
         </div>
-<div className="mt-12 border-t border-stone-800 pt-8 text-center">
-  <p className="text-xs text-stone-600">
-    © {new Date().getFullYear()} Chef Station. All rights reserved.
-  </p>
+      </div>
 
-  {/* Developer credit link */}
-  {/* <p className="text-xs text-stone-600 mt-2">
-    Engineered & Developed by{" "}
-    <a
-      href="https://www.nexoratech.info/"
-      target="_blank"
-      rel="noopener noreferrer"
-      className="text-stone-400 hover:text-white transition"
-    >
-      Nexora Tech
-    </a>
+      <div className="bg-ink text-white/70">
+        <div className="container-x grid gap-10 py-14 sm:grid-cols-2 lg:grid-cols-[1.4fr_1fr_1fr_1fr]">
+          <div>
+            <Logo light />
+            <p className="mt-4 max-w-xs text-sm leading-relaxed">
+              Desi food, fast bites and full meals at great prices — in the heart of Aziziyah, Jeddah.
+            </p>
+            <div className="mt-5 flex gap-2">
+              {social.map((s) => (
+                <a
+                  key={s.name}
+                  href={s.href}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex h-11 w-11 items-center justify-center rounded-full border-2 border-white/20 text-white transition hover:border-brand hover:bg-brand"
+                  aria-label={s.name}
+                >
+                  {s.icon}
+                </a>
+              ))}
+            </div>
+          </div>
 
-    hhhhhh
-  </p> */}
-</div>
-      
+          <div>
+            <p className="font-display text-sm font-extrabold uppercase tracking-wider text-kraft">Explore</p>
+            <ul className="mt-4 space-y-2.5 text-sm">
+              {explore.map((l) => (
+                <li key={l.href}>
+                  <Link href={l.href} className="transition hover:text-white">
+                    {l.label}
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </div>
+
+          <div>
+            <p className="font-display text-sm font-extrabold uppercase tracking-wider text-kraft">Timings</p>
+            <ul className="mt-4 space-y-2.5 text-sm">
+              {openingHours.map((h) => (
+                <li key={h.day} className="flex justify-between gap-4">
+                  <span>{h.day}</span>
+                  <span className={h.time === "Closed" ? "text-brand" : "text-white"}>{h.time}</span>
+                </li>
+              ))}
+            </ul>
+          </div>
+
+          <div>
+            <p className="font-display text-sm font-extrabold uppercase tracking-wider text-kraft">Find us</p>
+            <ul className="mt-4 space-y-2.5 text-sm">
+              <li>
+                <a href={contact.maps} target="_blank" rel="noopener noreferrer" className="transition hover:text-white">
+                  {contact.address}
+                </a>
+              </li>
+              <li>
+                <a href={contact.phoneHref} className="transition hover:text-white">
+                  {contact.phoneDisplay}
+                </a>
+              </li>
+              <li>
+                <a href={`mailto:${contact.email}`} className="transition hover:text-white">
+                  {contact.email}
+                </a>
+              </li>
+            </ul>
+          </div>
+        </div>
+
+        <div className="container-x">
+          <div className="rail opacity-30 invert" />
+        </div>
+        <div className="container-x flex flex-col items-center justify-between gap-2 py-6 text-xs text-white/40 sm:flex-row">
+          <p>© {new Date().getFullYear()} Chef Station. All rights reserved.</p>
+          <p>🚂 Good food, great prices.</p>
+        </div>
       </div>
     </footer>
   );

@@ -3,6 +3,10 @@
 import { useState } from "react";
 import PhoneInput from "react-phone-input-2";
 import { supabase } from "@/lib/supabaseClient";
+import { contact, openingHours } from "@/data/site";
+import { Reveal } from "@/components/Reveal";
+
+const times = ["5:00 PM", "5:30 PM", "6:00 PM", "6:30 PM", "7:00 PM", "7:30 PM", "8:00 PM", "8:30 PM", "9:00 PM"];
 
 export function ReservationSection() {
   const [submitted, setSubmitted] = useState(false);
@@ -22,21 +26,13 @@ export function ReservationSection() {
       reservation_time: String(form.get("time") || ""),
       email: String(form.get("email") || ""),
       notes: String(form.get("notes") || ""),
-
-      // ✅ FIXED PHONE FIELD
- phone: phone
-  ? phone.startsWith("+")
-    ? phone
-    : `+${phone}`
-  : "",
+      phone: phone ? (phone.startsWith("+") ? phone : `+${phone}`) : "",
     };
 
-    const { error } = await supabase
-      .from("reservations")
-      .insert([data]);
+    const { error } = await supabase.from("reservations").insert([data]);
 
     if (error) {
-      console.log("🔥 Insert error:", error);
+      console.log("Insert error:", error);
       alert(error.message);
       setLoading(false);
       return;
@@ -47,164 +43,145 @@ export function ReservationSection() {
   }
 
   return (
-    <section
-      id="reserve"
-      className="scroll-mt-32 sm:scroll-mt-24 border-y border-stone-200 bg-stone-100 py-16 sm:py-20"
-    >
-      <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
-        <div className="grid gap-12 lg:grid-cols-2 lg:gap-16 lg:items-start">
+    <section id="reserve" className="scroll-mt-24 border-t-2 border-ink bg-brand py-20 sm:py-28">
+      <div className="container-x grid gap-12 lg:grid-cols-[1fr_1.25fr] lg:gap-16">
+        <Reveal className="text-white">
+          <span className="tag border-2 border-ink bg-white text-ink">🎟️ Reservations</span>
+          <h2 className="mt-5 font-display text-5xl font-extrabold leading-[0.92] tracking-[-0.03em] sm:text-7xl">
+            Book your seat on the flavour express.
+          </h2>
+          <p className="mt-5 max-w-md text-lg leading-relaxed text-white/85">
+            Tell us when you&apos;d like to come — we&apos;ll confirm your table quickly, usually on WhatsApp.
+          </p>
 
-          {/* LEFT */}
-          <div>
-            <p className="text-xs font-semibold uppercase tracking-[0.25em] text-amber-600">
-              Reservations
-            </p>
-
-            <h2 className="font-display mt-3 text-3xl font-medium tracking-tight text-stone-900 sm:text-4xl">
-              Save your seat
-            </h2>
-
-            <p className="mt-4 max-w-md text-stone-600">
-              Tell us when you would like to dine. We will confirm your booking.
-            </p>
+          <div className="pop mt-8 rounded-3xl bg-ink p-6">
+            <p className="font-mono text-xs font-bold uppercase tracking-widest text-kraft">Departure times</p>
+            <ul className="mt-3 divide-y divide-white/10 font-mono text-sm">
+              {openingHours.map((h) => (
+                <li key={h.day} className="flex justify-between py-2.5">
+                  <span className="text-white/70">{h.day}</span>
+                  <span className={h.time === "Closed" ? "font-bold text-brand" : "font-bold text-kraft"}>{h.time}</span>
+                </li>
+              ))}
+            </ul>
           </div>
 
-          {/* FORM */}
-          <div className="rounded-2xl border border-stone-200 bg-white p-6 shadow-sm sm:p-8">
+          <div className="mt-6 flex flex-wrap gap-3">
+            <a
+              href={contact.whatsapp}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="pop rounded-full bg-[#25D366] px-6 py-3.5 font-display font-extrabold text-ink"
+            >
+              💬 WhatsApp us
+            </a>
+            <a href={contact.phoneHref} className="pop rounded-full bg-white px-6 py-3.5 font-display font-extrabold text-ink">
+              📞 {contact.phoneDisplay}
+            </a>
+          </div>
+        </Reveal>
 
-            {submitted ? (
-              <p className="py-8 text-center text-stone-600">
-                ✅ Thanks — we will confirm your table shortly.
-              </p>
-            ) : (
-              <form onSubmit={handleSubmit} className="space-y-5">
+        <Reveal delay={0.1}>
+          <div className="relative rounded-3xl border-2 border-ink bg-paper shadow-[8px_8px_0_var(--color-ink)]">
+            {/* Ticket header */}
+            <div className="flex items-center justify-between rounded-t-[22px] bg-ink px-6 py-4 text-white sm:px-8">
+              <div>
+                <p className="font-mono text-[11px] font-bold uppercase tracking-[0.25em] text-kraft">Boarding pass</p>
+                <p className="font-display text-2xl font-extrabold">Table reservation</p>
+              </div>
+              <img src="/logo bg.png" alt="" className="h-14 w-14 scale-125 object-contain" />
+            </div>
 
-                {/* NAME + GUESTS */}
-                <div className="grid gap-5 sm:grid-cols-2">
-                  <label className="block text-sm">
-                    <span className="font-medium text-stone-700">Name</span>
-                    <input
-                      required
-                      type="text"
-                      name="name"
-                      placeholder="Alex Morgan"
-                      className="mt-1.5 w-full rounded-xl border border-stone-300 px-4 py-2.5"
-                    />
-                  </label>
+            {/* Perforation */}
+            <div className="relative">
+              <span className="absolute -left-[15px] top-1/2 h-7 w-7 -translate-y-1/2 rounded-full border-2 border-ink bg-brand [clip-path:inset(0_0_0_50%)]" />
+              <span className="absolute -right-[15px] top-1/2 h-7 w-7 -translate-y-1/2 rounded-full border-2 border-ink bg-brand [clip-path:inset(0_50%_0_0)]" />
+              <div className="mx-6 border-t-2 border-dashed border-ink/25" />
+            </div>
 
-                  <label className="block text-sm">
-                    <span className="font-medium text-stone-700">Guests</span>
-                    <select
-                      name="guests"
-                      className="mt-1.5 w-full rounded-xl border border-stone-300 px-4 py-2.5"
-                    >
-                      {[1, 2, 3, 4, 5, 6, 7, 8].map((n) => (
-                        <option key={n} value={n}>
-                          {n} {n === 1 ? "guest" : "guests"}
-                        </option>
-                      ))}
-                    </select>
-                  </label>
+            <div className="p-6 sm:p-8">
+              {submitted ? (
+                <div className="flex min-h-[380px] flex-col items-center justify-center text-center">
+                  <span className="text-6xl">🎟️</span>
+                  <h3 className="mt-4 font-display text-3xl font-extrabold">You&apos;re booked in!</h3>
+                  <p className="mt-2 max-w-xs text-ink/65">Thanks — we will confirm your table shortly.</p>
                 </div>
+              ) : (
+                <form onSubmit={handleSubmit} className="space-y-5">
+                  <div className="grid gap-5 sm:grid-cols-2">
+                    <label className="block text-sm">
+                      <span className="mb-1.5 block font-bold">Passenger name</span>
+                      <input required type="text" name="name" placeholder="Your full name" className="field" />
+                    </label>
+                    <label className="block text-sm">
+                      <span className="mb-1.5 block font-bold">Guests</span>
+                      <select name="guests" className="field">
+                        {[1, 2, 3, 4, 5, 6, 7, 8].map((n) => (
+                          <option key={n} value={n}>
+                            {n} {n === 1 ? "guest" : "guests"}
+                          </option>
+                        ))}
+                      </select>
+                    </label>
+                  </div>
 
-                {/* DATE + TIME */}
-                <div className="grid gap-5 sm:grid-cols-2">
+                  <div className="grid gap-5 sm:grid-cols-2">
+                    <label className="block text-sm">
+                      <span className="mb-1.5 block font-bold">Date</span>
+                      <input required type="date" name="date" className="field" />
+                    </label>
+                    <label className="block text-sm">
+                      <span className="mb-1.5 block font-bold">Time</span>
+                      <select name="time" className="field">
+                        {times.map((t) => (
+                          <option key={t} value={t}>
+                            {t}
+                          </option>
+                        ))}
+                      </select>
+                    </label>
+                  </div>
+
                   <label className="block text-sm">
-                    <span className="font-medium text-stone-700">Date</span>
-                    <input
-                      required
-                      type="date"
-                      name="date"
-                      className="mt-1.5 w-full rounded-xl border border-stone-300 px-4 py-2.5"
-                    />
+                    <span className="mb-1.5 block font-bold">Email</span>
+                    <input required type="email" name="email" placeholder="you@example.com" className="field" />
                   </label>
 
-                  <label className="block text-sm">
-                    <span className="font-medium text-stone-700">Time</span>
-                    <select
-                      name="time"
-                      className="mt-1.5 w-full rounded-xl border border-stone-300 px-4 py-2.5"
-                    >
-                      {[
-                        "5:00 PM",
-                        "5:30 PM",
-                        "6:00 PM",
-                        "6:30 PM",
-                        "7:00 PM",
-                        "7:30 PM",
-                        "8:00 PM",
-                        "8:30 PM",
-                        "9:00 PM",
-                      ].map((t) => (
-                        <option key={t} value={t}>
-                          {t}
-                        </option>
-                      ))}
-                    </select>
-                  </label>
-                </div>
-
-                {/* EMAIL */}
-                <label className="block text-sm">
-                  <span className="font-medium text-stone-700">Email</span>
-                  <input
-                    required
-                    type="email"
-                    name="email"
-                    placeholder="you@example.com"
-                    className="mt-1.5 w-full rounded-xl border border-stone-300 px-4 py-2.5"
-                  />
-                </label>
-
-                {/* PHONE */}
-                <label className="block text-sm">
-                  <span className="font-medium text-stone-700">
-                    Phone Number (WhatsApp preferred for quick confirmation)
-                  </span>
-
-                  <div className="mt-1.5">
+                  <div className="block text-sm">
+                    <span className="mb-1.5 block font-bold">
+                      Phone <span className="font-normal text-ink/50">— WhatsApp preferred for quick confirmation</span>
+                    </span>
                     <PhoneInput
-                      country={"pk"}
+                      country={"sa"}
                       enableSearch={true}
                       value={phone}
                       onChange={(value) => setPhone(value)}
-                      inputStyle={{
-                        width: "100%",
-                        height: "42px",
-                        borderRadius: "12px",
-                        border: "1px solid #d6d3d1",
-                        paddingLeft: "48px",
-                        fontSize: "14px",
-                      }}
-                      containerStyle={{ width: "100%" }}
+                      containerClass="phone-field"
                     />
                   </div>
-                </label>
 
-                {/* NOTES */}
-                <label className="block text-sm">
-                  <span className="font-medium text-stone-700">Notes</span>
-                  <textarea
-                    name="notes"
-                    rows={3}
-                    placeholder="Allergies, occasion, seating preference…"
-                    className="mt-1.5 w-full rounded-xl border border-stone-300 px-4 py-2.5"
-                  />
-                </label>
+                  <label className="block text-sm">
+                    <span className="mb-1.5 block font-bold">Notes</span>
+                    <textarea
+                      name="notes"
+                      rows={3}
+                      placeholder="Allergies, occasion, seating preference…"
+                      className="field resize-none"
+                    />
+                  </label>
 
-                {/* BUTTON */}
-                <button
-                  type="submit"
-                  disabled={loading}
-                  className="w-full rounded-full bg-stone-900 py-3.5 text-sm font-semibold text-amber-50"
-                >
-                  {loading ? "Sending..." : "Request reservation"}
-                </button>
-
-              </form>
-            )}
+                  <button
+                    type="submit"
+                    disabled={loading}
+                    className="pop w-full rounded-full bg-brand py-4 font-display text-base font-extrabold text-white disabled:opacity-60"
+                  >
+                    {loading ? "Sending…" : "Confirm my seat →"}
+                  </button>
+                </form>
+              )}
+            </div>
           </div>
-        </div>
+        </Reveal>
       </div>
     </section>
   );

@@ -1,8 +1,11 @@
 "use client";
-//okay
+
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useLayoutEffect, useRef, useState } from "react";
+import { useEffect, useLayoutEffect, useState } from "react";
+import { AnimatePresence, motion } from "framer-motion";
+import { Logo } from "@/components/Logo";
+import { contact } from "@/data/site";
 
 const links = [
   { href: "/", label: "Home" },
@@ -14,71 +17,59 @@ const links = [
 export function Navbar() {
   const pathname = usePathname();
   const [open, setOpen] = useState(false);
-  const isFirstPath = useRef(true);
 
-useLayoutEffect(() => {
-  const scrollToHash = () => {
-    const hash = window.location.hash;
-    if (!hash) return;
+  useEffect(() => {
+    document.body.style.overflow = open ? "hidden" : "";
+  }, [open]);
 
-    const id = hash.replace("#", "");
+  // Scroll to #hash targets after navigation (sections may mount late in production).
+  useLayoutEffect(() => {
+    const scrollToHash = () => {
+      const id = window.location.hash.slice(1);
+      if (!id) return;
 
-    const tryScroll = () => {
-      const el = document.getElementById(id);
-
-      if (el) {
-        const navbarOffset = window.innerWidth < 640 ? 110 : 80;
-
-        const top =
-          el.getBoundingClientRect().top +
-          window.pageYOffset -
-          navbarOffset;
-
-        window.scrollTo({
-          top,
-          behavior: "smooth",
-        });
-      } else {
-        // 🔥 retry if not yet mounted (KEY FIX for production)
-        setTimeout(tryScroll, 100);
-      }
+      let tries = 0;
+      const tryScroll = () => {
+        const el = document.getElementById(id);
+        if (el) {
+          const top = el.getBoundingClientRect().top + window.scrollY - 80;
+          window.scrollTo({ top, behavior: "smooth" });
+        } else if (tries++ < 30) {
+          setTimeout(tryScroll, 100);
+        }
+      };
+      tryScroll();
     };
 
-    tryScroll();
-  };
-
-  scrollToHash();
-
-  // 🔥 listen to hash change
-  window.addEventListener("hashchange", scrollToHash);
-
-  return () => {
-    window.removeEventListener("hashchange", scrollToHash);
-  };
-}, [pathname]);
+    scrollToHash();
+    window.addEventListener("hashchange", scrollToHash);
+    return () => window.removeEventListener("hashchange", scrollToHash);
+  }, [pathname]);
 
   return (
-    <header className="sticky top-0 z-50 border-b border-stone-800/80 bg-stone-950/95 backdrop-blur-md">
-      <nav className="mx-auto flex max-w-6xl items-center justify-between px-4 py-3 sm:px-6 lg:px-8 h-16">
-        
-        {/* LOGO */}
-        <Link href="/" onClick={() => setOpen(false)}>
-          <img src="/logo bg.png" className="h-16 w-auto object-contain" />
-        </Link>
+    <header className="sticky top-0 z-50 border-b-2 border-ink bg-paper/90 backdrop-blur-md">
+      {/* Announcement strip */}
+      <div className="bg-ink text-center text-xs font-semibold text-white">
+        <p className="container-x py-1.5">
+          🚂 <span className="hidden sm:inline">Now boarding at </span>Aziziyah, Prince Majid Rd ·{" "}
+          <a href={contact.maps} target="_blank" rel="noopener noreferrer" className="text-kraft underline-offset-2 hover:underline">
+            Get directions
+          </a>
+        </p>
+      </div>
 
-        {/* DESKTOP LINKS */}
-        <ul className="hidden items-center gap-10 md:flex">
+      <nav className="container-x flex h-[72px] items-center justify-between">
+        <Logo onClick={() => setOpen(false)} />
+
+        <ul className="hidden items-center gap-1 md:flex">
           {links.map(({ href, label }) => {
             const active = pathname === href;
-
             return (
               <li key={href}>
                 <Link
                   href={href}
-                  className={`text-sm font-medium tracking-wide transition-colors ${
-                    active
-                      ? "text-amber-400"
-                      : "text-stone-300 hover:text-amber-200"
+                  className={`relative rounded-full px-4 py-2 font-display text-[15px] font-bold transition-colors ${
+                    active ? "bg-ink text-white" : "text-ink hover:bg-kraft-light"
                   }`}
                 >
                   {label}
@@ -88,58 +79,70 @@ useLayoutEffect(() => {
           })}
         </ul>
 
-        {/* DESKTOP RESERVE BUTTON (FIXED) */}
-        <Link
-    href="/#reserve"
-  onClick={() => setOpen(false)}
-          className="hidden md:inline-flex items-center rounded-full bg-amber-500 px-5 py-2 text-sm font-semibold text-stone-950 hover:bg-amber-400 transition"
-        >
-          Reserve
-        </Link>
+        <div className="hidden items-center gap-3 md:flex">
+          <a href={contact.phoneHref} className="text-sm font-bold text-ink hover:text-brand">
+            {contact.phoneDisplay}
+          </a>
+          <Link
+            href="/#reserve"
+            className="pop rounded-full bg-brand px-5 py-2.5 font-display text-sm font-extrabold text-white"
+          >
+            Book a table
+          </Link>
+        </div>
 
-        {/* MOBILE MENU BUTTON */}
         <button
           type="button"
-          className="inline-flex h-10 w-10 items-center justify-center rounded-lg border border-stone-700 text-stone-200 md:hidden"
+          className="pop flex h-11 w-11 items-center justify-center rounded-full bg-kraft text-ink md:hidden"
           aria-expanded={open}
           aria-label="Toggle menu"
           onClick={() => setOpen((v) => !v)}
         >
-          {open ? "✕" : "☰"}
+          <span className="relative block h-3.5 w-5">
+            <span className={`absolute left-0 h-0.5 w-5 rounded bg-current transition-all duration-300 ${open ? "top-1.5 rotate-45" : "top-0"}`} />
+            <span className={`absolute left-0 top-1.5 h-0.5 w-5 rounded bg-current transition-opacity ${open ? "opacity-0" : ""}`} />
+            <span className={`absolute left-0 h-0.5 w-5 rounded bg-current transition-all duration-300 ${open ? "top-1.5 -rotate-45" : "top-3"}`} />
+          </span>
         </button>
       </nav>
 
-      {/* MOBILE MENU */}
-      <div
-        className={`md:hidden overflow-hidden border-t border-stone-800 bg-stone-950 px-4 transition-all duration-300 ease-in-out ${
-          open ? "max-h-96 opacity-100 py-4" : "max-h-0 opacity-0 py-0"
-        }`}
-      >
-        <ul className="flex flex-col gap-3">
-          {links.map(({ href, label }) => (
-            <li key={href}>
-              <Link
-                href={href}
-                className="block py-2 text-stone-200"
-                onClick={() => setOpen(false)}
-              >
-                {label}
-              </Link>
-            </li>
-          ))}
-
-          {/* MOBILE RESERVE */}
-          <li>
-            <Link
-              href="/#reserve"
-              className="mt-2 block rounded-full bg-amber-500 py-3 text-center text-sm font-semibold text-stone-950"
-              onClick={() => setOpen(false)}
-            >
-              Reserve a table
-            </Link>
-          </li>
-        </ul>
-      </div>
+      <AnimatePresence>
+        {open && (
+          <motion.div
+            initial={{ height: 0 }}
+            animate={{ height: "auto" }}
+            exit={{ height: 0 }}
+            transition={{ duration: 0.3, ease: "easeOut" }}
+            className="overflow-hidden border-t-2 border-ink bg-kraft-light md:hidden"
+          >
+            <ul className="container-x flex flex-col gap-2 py-5">
+              {links.map(({ href, label }, i) => (
+                <li key={href}>
+                  <Link
+                    href={href}
+                    onClick={() => setOpen(false)}
+                    className={`flex items-center justify-between rounded-2xl border-2 border-ink px-5 py-3.5 font-display text-2xl font-extrabold ${
+                      pathname === href ? "bg-ink text-white" : "bg-white text-ink"
+                    }`}
+                  >
+                    {label}
+                    <span className="text-sm font-bold text-brand">Platform {i + 1}</span>
+                  </Link>
+                </li>
+              ))}
+              <li className="pt-2">
+                <Link
+                  href="/#reserve"
+                  onClick={() => setOpen(false)}
+                  className="pop block rounded-full bg-brand py-3.5 text-center font-display font-extrabold text-white"
+                >
+                  Book a table
+                </Link>
+              </li>
+            </ul>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </header>
   );
 }

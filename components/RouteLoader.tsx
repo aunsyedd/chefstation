@@ -2,80 +2,44 @@
 
 import { useEffect, useState } from "react";
 import { usePathname } from "next/navigation";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion } from "framer-motion";
 
+// Splash runs on full page loads only and is CSS-driven, so it never waits on hydration.
+// The timeout below removes it even if the animation can't run.
+// Client-side route changes get a quick fade instead.
 export function RouteLoader({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
-
-  // ✅ ALWAYS start true to prevent flash
-  const [loading, setLoading] = useState(true);
-  const [showPage, setShowPage] = useState(false);
+  const [splash, setSplash] = useState(true);
 
   useEffect(() => {
-    setLoading(true);
-    setShowPage(false);
-
-    const timer = setTimeout(() => {
-      setLoading(false);
-
-      // small delay ensures smooth transition
-      setTimeout(() => {
-        setShowPage(true);
-      }, 200);
-    }, 1200);
-
-    return () => clearTimeout(timer);
-  }, [pathname]);
+    const t = setTimeout(() => setSplash(false), 1600);
+    return () => clearTimeout(t);
+  }, []);
 
   return (
     <>
-      {/* 🍳 LOADER */}
-<AnimatePresence>
-  {loading && (
-    <motion.div
-      key="loader"
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      exit={{ opacity: 0, scale: 1.05 }}
-      transition={{ duration: 0.4 }}
-      className="fixed inset-0 flex items-center justify-center bg-stone-950 text-white z-[9999]"
-    >
-      {/* 👇 ADD FLEX COLUMN HERE */}
-      <motion.div className="flex flex-col items-center justify-center">
-        
-        <motion.div
-          animate={{ rotate: 360 }}
-          transition={{
-            repeat: Infinity,
-            duration: 1,
-            ease: "linear",
-          }}
-          className="text-5xl mb-3"
+      {splash && (
+        <div
+          aria-hidden
+          className="kraft-texture pointer-events-none fixed inset-0 z-[9999] flex animate-splash-out flex-col items-center justify-center"
         >
-          🍳
-        </motion.div>
-
-        {/* 👇 This will now go to next line properly */}
-        <p className="text-lg text-white/80 text-center">
-          Cooking your page...
-        </p>
-
-      </motion.div>
-    </motion.div>
-  )}
-</AnimatePresence>
-
-      {/* 📄 PAGE (ONLY SHOW AFTER LOADER) */}
-      {showPage && (
-        <motion.div
-          key={pathname}
-          initial={{ opacity: 0, y: 20, scale: 0.98 }}
-          animate={{ opacity: 1, y: 0, scale: 1 }}
-          transition={{ duration: 0.5, ease: "easeOut" }}
-        >
-          {children}
-        </motion.div>
+          <img src="/logo bg.png" alt="" className="h-48 w-48 animate-splash-pop object-contain" />
+          <div className="mt-6 w-56 overflow-hidden">
+            <div className="animate-splash-train text-3xl">🚂💨</div>
+            <div className="rail mt-1" />
+          </div>
+        </div>
       )}
+
+      <motion.div
+        key={pathname}
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ duration: 0.3 }}
+        className="flex flex-1 flex-col"
+      >
+        {children}
+      </motion.div>
     </>
   );
 }
